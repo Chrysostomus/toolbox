@@ -14,15 +14,15 @@ TC='\e[1m' # Highlighting Text color
 # Wrong Option
 ERRORMSG="$RED Wrong option $NC"
 TRYAGAINMSG=" Please try again..."
-# File Manager
+# File Manager (Ranger)
 INSTALLINGRNG1MSG="Installing ranger to manage files"
 CLIFMNOTINSTMSG="No cli filemanager is installed and Pacman seems to be in use"
-# Task Manager (Htop)
-INSTALLINGHTOPMSG="Installing htop to manage tasks"
-HTOPNOTINSTMSG="Htop is not installed and Pacman seems to be in use"
-# File Search
+# Task Manager (bashtop)
+INSTALLINGTASKMANMSG="Installing bashtop to manage tasks"
+TASKMANNOTINSTMSG="Bashtop is not installed and Pacman seems to be in use"
+# File Search (Rifle)
 RIFLENOTINSTMSG="Rifle is not installed and Pacman seems to be in use"
-# Web Browser
+# Web Browser (Links)
 INSTALLINGCLIBRWOSMSG="Installing links to surf the web"
 CLIBROWSNOTINSTMSG="No cli browser installed and Pacman seems to be in use"
 # PacUI
@@ -139,16 +139,16 @@ function file_finder {
 
 # Taskmanager
 function taskmanager {
-	if [ -e /usr/bin/htop ]
+	if [ -e /usr/bin/bashtop ]
   then
-		htop
+		bashtop
 	else
-		echo "$INSTALLINGHTOPMSG"
+		echo "$INSTALLINGTASKMANMSG"
     if [ -e /var/lib/pacman/db.lck ]
     then
-      echo "$HTOPNOTINSTMSG"
+      echo "$TASKMANNOTINSTMSG"
     else
-		  sudo pacman -Sy htop && htop
+		  sudo pacman -Sy bashtop && bashtop
     fi
 	fi
 }
@@ -157,10 +157,11 @@ function taskmanager {
 function sysinfo {
   if [ -e /usr/bin/inxi ]
   then
-    sudo inxi -v8 | tee .inxi.txt &>/dev/null
+    cd "$HOME"
+    sudo inxi -v8 | tee "$HOME/.inxi.txt" &>/dev/null
     printf '\33[H\33[2J'
-    < .inxi.txt fzf -i --multi --reverse --info=inline --prompt="Enter string > " --header="TAB key to (un)select. ENTER to view selection. ESC to quit. " --no-unicode
-    rm -rf .inxi.txt
+    < "$HOME/.inxi.txt" fzf -i --multi --reverse --info=inline --prompt="Enter string > " --header="TAB key to (un)select. ENTER to view selection. ESC to quit. " --no-unicode
+    rm -rf "$HOME/.inxi.txt"
 	else
 		echo "$INSTALLINGINXIMSG"
     if [ -e /var/lib/pacman/db.lck ]
@@ -196,6 +197,7 @@ function freqinfo() {
 
 # Music Player
 function music() {
+  cd "$HOME"
   if [ -e /usr/bin/cmus ]
   then
     echo -e " $RED Press $BG 1-7 $NC$RED to navigate and $BG Q $NC$RED to return to ToolBox $NC"
@@ -214,7 +216,7 @@ function music() {
 
 # Check if a website is up via https://isitup.org/
 function geturl() {
-  curl -sL https://isitup.org/"$uservar" | grep data-text= | cut -c 19- | rev | cut -c 11- | rev
+  curl -sL https://isitup.org/"$uservar" | grep data-text= | cut -c 20- | rev | cut -c 11- | rev
 }
 
 function isitup() {
@@ -237,10 +239,8 @@ function randArrayElement() {
 # Startmenu for releasecompare
 function releasecompare_startmenu() {
   echo ""
-  echo -e "$BLUE This tool will compare the latest Manjaro release to the local system $NC"
-  echo -e "$BLUE to see which applications may have been added to new releases! $NC"
-  echo ""
-  echo -e "$ORANGE Chose what to do! $NC"
+  echo -e "$TC This tool will compare the release package list of Manjaro, $NC"
+  echo -e "$TC or any Arch based distro to the local system. $NC"
   echo ""
   echo "  1) Compare only"
   echo "  2) Installation Options"
@@ -278,8 +278,8 @@ E4="\e[1mF\e[0mile Manager"
 E5="\e[1mW\e[0meb Browser"
 E6="File \e[1mS\e[0mearch"
 E7="System & Settings"
-E8="Translate Shel\e[1ml\e[0m"
-E9="Manjaro \e[1mR\e[0melease Compare"
+E8="CLI Trans\e[1ml\e[0mator"
+E9="\e[1mR\e[0melease Comparison"
 E10="\e[1mT\e[0mask Manager"
 E11="\e[1mC\e[0mpu Frequency Info"
 E12="System \e[1mD\e[0miagnosis"
@@ -301,9 +301,9 @@ do
     echo -e " $TC|$NC--------------------------------$TC|$NC-------------------------------$TC|$NC"
     echo -e " $TC|$NC    $BG 5 $NC $E5             $TC|$NC    $BG 6 $NC $E6            $TC|$NC"
     echo -e " $TC|$NC--------------------------------$TC|$NC-------------------------------$TC|$NC"
-    echo -e " $TC|$NC    $BG 7 $NC $E7 $NC      $TC|$NC    $BG 8 $NC $E8        $TC|$NC"
+    echo -e " $TC|$NC    $BG 7 $NC $E7 $NC      $TC|$NC    $BG 8 $NC $E8         $TC|$NC"
     echo -e " $TC|$NC--------------------------------$TC|$NC-------------------------------$TC|$NC"
-    echo -e " $TC|$NC    $BG 9 $NC $E9 $TC|$NC    $BG T $NC $E10           $TC|$NC"
+    echo -e " $TC|$NC    $BG 9 $NC $E9 $TC     |$NC    $BG T $NC $E10           $TC|$NC"
     echo -e " $TC|$NC--------------------------------$TC|$NC-------------------------------$TC|$NC"
     echo -e " $TC|$NC    $BG C $NC $E11      $TC|$NC    $BG D $NC $E12       $TC|$NC"
     echo -e " $TC|$NC--------------------------------$TC|$NC-------------------------------$TC|$NC"
